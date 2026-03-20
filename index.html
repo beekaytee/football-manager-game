@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Football Manager Lite</title>
+  <style>
+    body {
+      font-family: Arial;
+      background: #0b0f1a;
+      color: white;
+      text-align: center;
+    }
+    button {
+      padding: 10px;
+      margin: 5px;
+      background: #1db954;
+      border: none;
+      color: white;
+      cursor: pointer;
+    }
+    .card {
+      background: #1a1f2e;
+      padding: 10px;
+      margin: 10px;
+      border-radius: 10px;
+    }
+  </style>
+</head>
+<body>
+
+<h1>⚽ Manager Mode</h1>
+
+<div class="card">
+  <h2>Club</h2>
+  <p id="money"></p>
+  <p id="week"></p>
+</div>
+
+<div class="card">
+  <h2>Squad</h2>
+  <div id="players"></div>
+</div>
+
+<div class="card">
+  <h2>Actions</h2>
+  <button onclick="playMatch()">Play Match</button>
+  <button onclick="buyPlayer()">Buy Player</button>
+</div>
+
+<div class="card">
+  <h2>Match Result</h2>
+  <p id="result"></p>
+</div>
+
+<script>
+let money = 1000000;
+let week = 1;
+
+let squad = [
+  {name: "Player A", rating: 75},
+  {name: "Player B", rating: 78},
+  {name: "Player C", rating: 80}
+];
+
+function updateUI() {
+  document.getElementById("money").innerText = "💰 Money: $" + money;
+  document.getElementById("week").innerText = "📅 Week: " + week;
+
+  let playerHTML = "";
+  squad.forEach(p => {
+    playerHTML += `<p>${p.name} - ⭐ ${p.rating}</p>`;
+  });
+
+  document.getElementById("players").innerHTML = playerHTML;
+}
+
+function playMatch() {
+  let teamRating = squad.reduce((sum, p) => sum + p.rating, 0) / squad.length;
+  let opponent = Math.floor(Math.random() * 85);
+
+  let result = "";
+
+  if (teamRating > opponent) {
+    result = "✅ You won!";
+    money += 50000;
+  } else if (teamRating === opponent) {
+    result = "🤝 Draw";
+    money += 20000;
+  } else {
+    result = "❌ You lost";
+  }
+
+  // Random event
+  if (Math.random() < 0.3) {
+    squad[Math.floor(Math.random() * squad.length)].rating -= 1;
+    result += " (Player lost form)";
+  }
+
+  document.getElementById("result").innerText = result;
+  week++;
+  updateUI();
+}
+
+function buyPlayer() {
+  let cost = Math.floor(Math.random() * 200000);
+
+  if (money >= cost) {
+    let newPlayer = {
+      name: "New Player",
+      rating: Math.floor(Math.random() * 20) + 70
+    };
+    squad.push(newPlayer);
+    money -= cost;
+    alert("Player signed!");
+  } else {
+    alert("Not enough money!");
+  }
+
+  updateUI();
+}
+
+updateUI();
+</script>
+
+</body>
+</html>
